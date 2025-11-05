@@ -25,29 +25,15 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
-userSchema.methods.generateAuthToken = function (next) {
-  jwt.sign(
-    { id: this._id },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" },
-    (err, token) => {
-      if (err) return next(err);
-      this.refreshToken = token;
-      next();
-    }
-  );
+userSchema.methods.generateAuthToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
 };
-userSchema.methods.generateRefreshToken = function (next) {
-  jwt.sign(
-    { id: this._id },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" },
-    (err, token) => {
-      if (err) return next(err);
-      this.refreshToken = token;
-      next();
-    }
-  );
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
 };
 
 const User = mongoose.model("User", userSchema);
