@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRoutes from "./src/routes/user.routes.js";
 import connectDB from "./src/config/db.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./src/config/swagger.js";
 
 dotenv.config();
 const app = express();
@@ -11,6 +13,10 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+  explorer: true
+}));
+
 
 const PORT = process.env.PORT || 3000;
 
